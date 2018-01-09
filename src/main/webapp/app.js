@@ -7,16 +7,22 @@ document.addEventListener('DOMContentLoaded', function (event) {
     resize.init();
 
     // Upload photo
-    var upload = function (photo, callback) {
+    var upload = function (photo,fileName, callback) {
         var formData = new FormData();
-        formData.append('photo', photo);
+        formData.append('photo', photo,fileName);
         var request = new XMLHttpRequest();
         request.onreadystatechange = function () {
-            if (request.readyState === 4) {
-                callback(request.response);
+            if (this.readyState === 4) {
+                var status = request.status;
+                console.log("request.status=" + status);
+                if (status === 201) {
+                    var location = this.getResponseHeader('Location');
+                    console.log("getResponseHeader('Location')=" + location);
+                    callback(location);
+                }
             }
         }
-        request.open('POST', './process.php');
+        request.open('POST', './upload');
         request.responseType = 'json';
         request.send(formData);
     };
@@ -30,22 +36,27 @@ document.addEventListener('DOMContentLoaded', function (event) {
         event.preventDefault();
 
         var files = event.target.files;
+
         for (var i in files) {
 
             if (typeof files[i] !== 'object')
                 return false;
 
             (function () {
-
+                var fileName = files[i].name;
+                console.log('filename=' + fileName);
                 var initialSize = files[i].size;
 
                 resize.photo(files[i], 1200, 'file', function (resizedFile) {
 
                     var resizedSize = resizedFile.size;
 
-                    upload(resizedFile, function (response) {
+                    upload(resizedFile,fileName, function (createdUrl) {
+
                         var rowElement = document.createElement('tr');
-                        rowElement.innerHTML = '<td>' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + '</td><td>' + fileSize(initialSize) + '</td><td>' + fileSize(resizedSize) + '</td><td>' + Math.round((initialSize - resizedSize) / initialSize * 100) + '%</td><td><a href="' + response.url + '">view image</a></td>';
+                        rowElement.innerHTML = '<td>' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + '</td><td>'
+                                + fileSize(initialSize) + '</td><td>' + fileSize(resizedSize) + '</td><td>'
+                                + Math.round((initialSize - resizedSize) / initialSize * 100) + '%</td><td><a href="' + createdUrl + '">view image</a></td>';
                         document.querySelector('table.images tbody').appendChild(rowElement);
                     });
 
