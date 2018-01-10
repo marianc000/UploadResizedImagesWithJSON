@@ -2,7 +2,7 @@
  */
 package image;
 
-import static image.ImageUpload.FILE_FOLDER_PATH;
+import static image.ImageConstants.FILE_STORAGE_LOCATION;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLDecoder;
@@ -15,7 +15,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.HttpHeaders;
 
 /**
  *
@@ -23,17 +22,17 @@ import javax.ws.rs.core.HttpHeaders;
  */
 @WebServlet(urlPatterns = {"/image/*"})
 public class ImageServlet extends HttpServlet {
+public static String IMAGE_SERVLET_PATH="image/";
+    @Override
+    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        System.out.println("XXXXXXXXXXXX " + getServletInfo());
         String fileName = request.getPathInfo();
         if (fileName != null) {
             fileName = URLDecoder.decode(fileName, StandardCharsets.UTF_8.name());
-            Path filePath = Paths.get(FILE_FOLDER_PATH, fileName.substring(1));
+            Path filePath = Paths.get(FILE_STORAGE_LOCATION, fileName.substring(1));
             if (Files.exists(filePath)) {
-                response.setHeader(HttpHeaders.CONTENT_TYPE, getServletContext().getMimeType(fileName));
-                response.setHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(Files.size(filePath)));
+                response.setContentType(getServletContext().getMimeType(fileName));
+                response.setContentLengthLong(Files.size(filePath));
                 //content-disposition inline?
                 Files.copy(filePath, response.getOutputStream());
             } else {
@@ -53,44 +52,5 @@ public class ImageServlet extends HttpServlet {
         System.out.println(msg);
         response.sendError(HttpServletResponse.SC_NOT_FOUND, msg);
     }
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
 
 }
