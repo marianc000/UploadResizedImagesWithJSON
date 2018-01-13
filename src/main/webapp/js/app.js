@@ -80,10 +80,12 @@ requirejs(['jquery', 'app/resize', 'app/fileUtils'], function ($, resize, fileUt
 
             if (selectedFiles.length) {
                 // upload all toghether
-                fileUtils.upload(uploadUrl, selectedFiles, function (createdUrl) {
-//                        $imageTable.append('<tr><td>' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + '</td><td>'
-//                                + fileUtils.fileSize(initialSize) + '</td><td>' + fileUtils.fileSize(resizedSize) + '</td><td>'
-//                                + Math.round((initialSize - resizedSize) / initialSize * 100) + '%</td><td><a href="' + createdUrl + '">view image</a></td></tr>');
+                fileUtils.upload(uploadUrl, selectedFiles, function (data) {
+                    data.photos.forEach(function(url){
+                        $imageTable.append('<tr><td>' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + '</td><td>'
+                              + '</td><td>' +   '</td><td>'
+                                +   '</td><td><a href="' + url + '">view image</a></td></tr>');
+                    });
                 });
             }
         });

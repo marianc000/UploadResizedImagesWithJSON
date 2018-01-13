@@ -17,13 +17,15 @@ define(function () {
                 data: formData,
                 processData: false,
                 type: 'POST',
-                contentType: false
+                contentType: false,
+                dataType: 'json'
             })
                     .done(function (data, textStatus, jqXHR) {
-                        console.log("done textStatus=" + textStatus);
+
                         var location = jqXHR.getResponseHeader('Location');
-                        console.log("done textStatus=" + textStatus + "; location=" + location);
-                        callback(location);
+                        console.log("done textStatus=" + textStatus + "; location=" + location + "; data=" + data);
+                        console.table(data);
+                        callback(data);
                     })
                     .fail(function (jqXHR, textStatus, errorThrown) {
                         console.log("error textStatus=" + textStatus + "; errorThrown=" + errorThrown);

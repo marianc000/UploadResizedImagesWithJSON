@@ -8,6 +8,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Enumeration;
+import java.util.LinkedList;
+import java.util.List;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -25,7 +27,7 @@ import javax.servlet.http.Part;
 @MultipartConfig(location = FILE_STORAGE_LOCATION)
 public class ImageUpload extends HttpServlet {
 
-       public String FILE_PART_NAME = "photo";
+    public String FILE_PART_NAME = "photo";
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -55,20 +57,34 @@ public class ImageUpload extends HttpServlet {
 //            }
 
 //           out.println("<br/><br/>XXXXXX Saving files:<br/>");  
+        List<String> urls = new LinkedList<>();
         for (Part p : request.getParts()) {
 
             if (p.getName().equals(FILE_PART_NAME)) {
-                System.out.println("XXX Setting header");
 
                 String fileName = p.getSubmittedFileName();
-                response.setHeader("Location", IMAGE_SERVLET_PATH + fileName);
+                System.out.println("XXX Saving " + fileName);
+                urls.add(quote(getImageUrl(fileName)));
+                //    response.setHeader("Location", IMAGE_SERVLET_PATH + fileName);
                 //  out.println("Saving " + fileName + "<br/>");
                 p.write(fileName);
             }
         }
         //TODO: return url in location header
+        String responseStr = "{\"photos\":" + urls.toString() + "}";
+        System.out.println("responseStr=" + responseStr);
+        response.setContentType("application/json;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+            out.write(responseStr);
+        }
+    }
 
-        // }
+    String quote(String str) {
+        return '"' + str + '"';
+    }
+
+    String getImageUrl(String fileName) {
+        return IMAGE_SERVLET_PATH + fileName;
     }
 
     @Override
