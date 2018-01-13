@@ -94,7 +94,8 @@ $(function () {
                 resize(files[i], 1200, function (resizedFile) {
                     console.log('resized=' + resizedFile.size);
                     var resizedSize = resizedFile.size;
-
+                    
+// upload all toghether
                     upload(resizedFile, fileName, function (createdUrl) {
 
                         var rowElement = document.createElement('tr');
