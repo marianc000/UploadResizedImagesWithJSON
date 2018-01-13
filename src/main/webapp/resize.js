@@ -25,9 +25,7 @@ function resize(file, maxSize,  callback) {
         canvas.height = height;
         canvas.getContext('2d').drawImage(image, 0, 0, width, height);
         //void canvas.toBlob(callback, mimeType, qualityArgument);
-        canvas.toBlob(function (blob) {
-            callback(blob);
-        }, 'image/jpeg', 0.8);
+        canvas.toBlob(callback, 'image/jpeg', 0.8);
 
     }
     image.src = URL.createObjectURL(file);
