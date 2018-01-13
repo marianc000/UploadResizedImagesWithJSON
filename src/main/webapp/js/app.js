@@ -11,8 +11,7 @@ requirejs.config({
 });
 
 // Start the main app logic.
-requirejs(['jquery', 'app/resize'], function ($, resize) {
-
+requirejs(['jquery', 'app/resize', 'app/fileUtils'], function ($, resize, fileUtils) {
 
     var uploadUrl = 'upload';
 // drag and drop
@@ -25,36 +24,6 @@ requirejs(['jquery', 'app/resize'], function ($, resize) {
         var $noLoadedFilesMessage = $previewDiv.children('p');
         var $previewList = $previewDiv.children('ul');
         var $dropBox = $('#dropbox');
-
-        // Upload photo
-        var upload = function (photo, fileName, callback) {
-            var formData = new FormData();
-            formData.append('photo', photo, fileName);
-            $.ajax({
-                url: uploadUrl,
-                data: formData,
-                processData: false,
-                type: 'POST',
-                contentType: false
-            })
-                    .done(function (data, textStatus, jqXHR) {
-                        console.log("done textStatus=" + textStatus);
-                        var location = jqXHR.getResponseHeader('Location');
-                        console.log("done textStatus=" + textStatus + "; location=" + location);
-                        callback(location);
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrown) {
-                        console.log("error textStatus=" + textStatus + "; errorThrown=" + errorThrown);
-                    });
-        };
-
-        var fileSize = function (size) {
-            var i = Math.floor(Math.log(size) / Math.log(1024));
-            return (size / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
-        };
-        console.log('setting the listeners');
-
-
 
         $filesInput.change(function (event) {
             console.log("on change");
@@ -76,52 +45,57 @@ requirejs(['jquery', 'app/resize'], function ($, resize) {
             }
         }
 
-        function showThumb(file) {
+        function showThumb(file ) {
             selectedFiles.push(file);
             showMessage();
-            $previewList.append('<li><p>' + file.name + '</p><img src="' + URL.createObjectURL(file) + '"  onload="window.URL.revokeObjectURL( this.src);console.log(\'releaseURL2\');"/></li>');
+            $previewList.append('<li><p>' + file.myName + '</p><img src="' + URL.createObjectURL(file) + '"  onload="window.URL.revokeObjectURL( this.src);console.log(\'releaseURL2\');"/></li>');
             //URL.revokeObjectURL( src);
         }
 
         function showThumbs(files) {
             for (var i = 0; i < files.length; i++) {
                 var photo = files[i];
-                console.log("=" + photo.name + "; " + photo.type);
+
                 if (photo.type.startsWith("image/")) {
-                    showThumb(photo);
+                    //  showThumb(photo);  
+                    //  console.log("=" + photo.name + "; " + photo.type);
+                    resizePhoto(photo);
                 }
             }
         }
+        function resizePhoto(file) {
+            console.log('resizing filename=' + file.name + '; initial size=' + file.size);
+            resize(file, 1200, function (resizedFile) {
+                console.log('resized o.filename=' + file.name + '; r.filename=' + resizedFile.name + '; initial size=' + file.size + '; resized=' + resizedFile.size);
+                resizedFile.myName=file.name; // name is erased in the resized file
+                showThumb(resizedFile );
 
+            });
+        }
 
         $('input[type=submit]').click(function (event) {
             console.log('submit');
             event.preventDefault();
 
-            var files = selectedFiles;
 
-            for (var i = 0; i < files.length; i++) {
-                (function () {
-                    var fileName = files[i].name;
-                    console.log('filename=' + fileName);
-                    var initialSize = files[i].size;
-
-                    resize(files[i], 1200, function (resizedFile) {
-                        console.log('resized=' + resizedFile.size);
-                        var resizedSize = resizedFile.size;
-
-// upload all toghether
-                        upload(resizedFile, fileName, function (createdUrl) {
-                            $imageTable.append('<tr><td>' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + '</td><td>'
-                                    + fileSize(initialSize) + '</td><td>' + fileSize(resizedSize) + '</td><td>'
-                                    + Math.round((initialSize - resizedSize) / initialSize * 100) + '%</td><td><a href="' + createdUrl + '">view image</a></td></tr>');
-                        });
-                    });
-                }());
-
+            if (selectedFiles.length) {
+                // upload all toghether
+                fileUtils.upload(uploadUrl, selectedFiles, function (createdUrl) {
+//                        $imageTable.append('<tr><td>' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + '</td><td>'
+//                                + fileUtils.fileSize(initialSize) + '</td><td>' + fileUtils.fileSize(resizedSize) + '</td><td>'
+//                                + Math.round((initialSize - resizedSize) / initialSize * 100) + '%</td><td><a href="' + createdUrl + '">view image</a></td></tr>');
+                });
             }
-
         });
+
+        function displayUploadedImage(createdUrl, initialSize, resizedSize) {
+            $imageTable.append('<tr><td>' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + '</td><td>'
+                    + fileUtils.fileSize(initialSize) + '</td><td>' + fileUtils.fileSize(resizedSize) + '</td><td>'
+                    + Math.round((initialSize - resizedSize) / initialSize * 100) + '%</td><td><a href="' + createdUrl + '">view image</a></td></tr>');
+        }
+
+
+
         $dropBox.on("dragenter", onDragEnter).on("dragover", onDragOver).on("drop", onDrop);
 
         function onDragEnter(e) {
