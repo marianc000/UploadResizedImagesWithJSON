@@ -3,6 +3,7 @@
 package image;
 
 import static image.ImageConstants.FILE_STORAGE_LOCATION;
+import static image.ImageConstants.FORM_DATA_PART_NAME;
 import static image.ImageServlet.IMAGE_SERVLET_PATH;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -70,6 +71,9 @@ public class ImageUpload extends HttpServlet {
                 p.write(fileName);
             }
         }
+        Part dataPart = request.getPart(FORM_DATA_PART_NAME);
+        System.out.println("dataPart=" + dataPart);
+
         //TODO: return url in location header
         String responseStr = "{\"photos\":" + urls.toString() + "}";
         System.out.println("responseStr=" + responseStr);

@@ -9,10 +9,10 @@
         <title>File Upload Example</title>
     </head>
     <body>
-        <form action="uploadJSP" method="post"   enctype="multipart/form-data">
+        <form action="api/form/part" method="post"   enctype="multipart/form-data">
             <h3>Choose files to upload.</h3>
-            First name: <input type="text" name="fname"><br>
-            Last name: <input type="text" name="lname"><br>
+            First name: <input type="text" name="firstName"><br>
+            Last name: <input type="text" name="lastName"><br>
             <input name="myFile" type="file"/> <br/>
             <input name="myFile" type="file"/> <br/> <br/>
             <input value="upload" type="submit"/>
