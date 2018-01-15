@@ -11,7 +11,7 @@ public class MyApplication extends Application {
     public MyApplication() {
         singletons = new HashSet<Object>() {
             {
-                add(new MyObjectMapperProvider());
+                add(new MySharedObjectMapperProvider());
             }
         };
         resources = new HashSet<Class<?>>() {

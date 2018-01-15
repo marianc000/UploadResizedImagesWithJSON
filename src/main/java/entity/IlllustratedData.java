@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class IlllustratedData {
 
     String firstName, lastName;
-    List<String> urls;
+    List<String> photos;
 
     public IlllustratedData() {
     }
@@ -18,7 +18,7 @@ public class IlllustratedData {
     public IlllustratedData(String firstName, String lastName, List<String> urls) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.urls = urls;
+        this.photos = urls;
     }
 
     public String getFirstName() {
@@ -37,12 +37,22 @@ public class IlllustratedData {
         this.lastName = lastName;
     }
 
-    public List<String> getUrls() {
-        return urls;
+    public List<String> getPhotos() {
+        return photos;
     }
 
-    public void setUrls(List<String> urls) {
-        this.urls = urls;
+    public void setPhotos(List<String> photos) {
+        System.out.println(">setPhotos");
+        for (String s : photos) {
+            System.out.println(s);
+        }
+        System.out.println("<setPhotos");
+        this.photos = photos;
+    }
+
+    @Override
+    public String toString() {
+        return "IlllustratedData{" + "firstName=" + firstName + ", lastName=" + lastName + ", urls=" + photos + '}';
     }
 
 }

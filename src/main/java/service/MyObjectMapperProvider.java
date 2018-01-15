@@ -9,7 +9,7 @@ import javax.ws.rs.ext.ContextResolver;
 //By default a single instance of each provider class is instantiated for each JAX-RS application
 public class MyObjectMapperProvider implements ContextResolver<ObjectMapper> {
     
-    ObjectMapper objectMapper;
+    ObjectMapper objectMapper;  // create once, reuse
     
     public MyObjectMapperProvider() {
         objectMapper = createObjectMapper();
