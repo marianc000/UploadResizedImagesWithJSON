@@ -1,10 +1,8 @@
 define(function () {
     return  function (file, maxSize, callback) {
-        console.log('initial size=' + file.size);
         var image = new Image();
         image.onload = function ( ) {
             URL.revokeObjectURL(this.src);
-            // Resize image
             var canvas = document.createElement('canvas'),
                     width = image.width,
                     height = image.height;
@@ -26,5 +24,5 @@ define(function () {
             canvas.toBlob(callback, 'image/jpeg', 0.8);
         };
         image.src = URL.createObjectURL(file);
-    } ;
+    };
 });

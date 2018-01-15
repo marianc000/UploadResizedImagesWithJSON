@@ -1,25 +1,36 @@
-*, *:after, *:before {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+ 
+
+html  {
+    font-family: Arial, Helvetica, sans-serif;
+}
+div.textInputs,div.fileInputs{
+    display:inline-block;
+    vertical-align: middle;
+}
+div.inputsContainer{
+    padding: 2em;
+    text-align: center;
+}
+ button {
+    padding: 0.3em 1em;
+     
+    transition-duration: 0.1s;
+    
+    background-color: white; 
+    color: gray; 
+    border: 1px solid gray;
 }
 
-html, input, textarea {
-    font: 100%/1.5em Helvetica, Arial, sans-serif;
+ button:hover {
+    background-color: gray;
+    color: white;
 }
-
 form {
     margin: 5% auto 0;
     text-align: center;
     width: 50%;
 }
-/*form input {
-    background: rgb(236, 240, 241);
-    border-radius: 3px;
-    padding: 1em;
-}*/
+ 
 
 table {
     background: rgb(245, 245, 245);
@@ -37,10 +48,7 @@ table tbody tr:nth-child(even) {
 table thead th, table tbody tr td {
     padding: 0.5em 1em;
 }
-.preview p {
-    text-align: center;
-    padding: 1em;
-}
+ 
 .preview img {
     width: 8em;
     /* text-align: center; */
@@ -50,14 +58,20 @@ li {
     text-align: center;
     display: inline-block;
     vertical-align: top;
-    border: 1px solid red;
+    padding: 0.2em;
 }
-
-ul {
-    border: 1px solid;
+ 
+p {
+    margin: 0 0 0.2em 0;
+    text-align: center;
 }
 input[type=file] {
     display: none;
+}
+
+div.preview {
+    border-bottom: 2px solid;
+    margin-bottom: 0.5em;
 }
 label img {
     max-height: 1.5em;
@@ -68,4 +82,7 @@ label {
     border: 1px solid;
     display: inline-block;
     padding: 0.3em;
+}
+.loadedImages img {
+    max-width: 10em;
 }

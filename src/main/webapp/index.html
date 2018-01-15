@@ -8,30 +8,28 @@
         <script data-main="js/app.js" src="js/require.js"></script>
     </head>
     <body>
-        <form> 
-            <label id='dropbox' for='fileInput'><img src="images/File-Upload-icon.png"/>Select photos</label>
-            <!--change to button-->
-            <input id='fileInput' type="file" accept="image/*" multiple />
-            <p>First name:  <input type="text" name="firstName" value="John"></p>
-            <p>Last name: <input type="text" name="lastName" value="Smith"></p>
-            <input  type="submit" value="Save">
-        </form>
-        <div class="preview">
-            <p>No files currently selected for upload</p>
-            <ul></ul>
+        <div class="mainContainer">
+            <div class="inputsContainer"> 
+                <div class="textInputs">
+                    <p>First name:  <input type="text" name="firstName" value="John"></p>
+                    <p>Last name: <input type="text" name="lastName" value="Smith"></p>    
+                </div>
+                <div class="fileInputs"><label id='dropbox' for='fileInput'><img src="images/File-Upload-icon.png"/>Select photos</label>
+                    <!--change to button-->
+                    <input id='fileInput' type="file" accept="image/*" multiple />
+                </div>
+                <button type="button">Submit</button>
+            </div>
+            <div class="preview">
+                <p class="nonEmptyMessage">Images in memory to be loaded</p>
+                <p class="emptyMessage">No files currently selected for upload</p>
+                <ul></ul>
+            </div>
+            <div class="loadedImages">
+                <p>Loaded images</p>
+                <ul></ul>
+            </div>
         </div>
-        <table class="images">
-            <thead>
-            <th>Time</th>
-            <th>Initial Size</th>
-            <th>Resized Size</th>
-            <th>Saving</th>
-            <th>Resized Image</th>
-        </thead>
-        <tbody>
-
-        </tbody>
-    </table>
-</body>
+    </body>
 
 </html>

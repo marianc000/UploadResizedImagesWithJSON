@@ -18,17 +18,18 @@ requirejs(['jquery', 'app/resize', 'app/fileUtils'], function ($, resize, fileUt
 
     $(function () {
         var selectedFiles = [];
-        var $filesInput = $('form input[type=file]');
-        var $firstNameInput = $('form input[name="firstName"]');
-        var $lastNameInput = $('form input[name="lastName"]');
-        var $imageTable = $('table.images tbody');
+        var $filesInput = $('input[type=file]');
+        var $firstNameInput = $('input[name="firstName"]');
+        var $lastNameInput = $('input[name="lastName"]');
+        //  var $imageTable = $('table.images tbody');
         var $previewDiv = $('div.preview');
-        var $noLoadedFilesMessage = $previewDiv.children('p');
+        var $noFilesMessage = $previewDiv.find('p.emptyMessage');
+        var $someFilesMessage = $previewDiv.find('p.nonEmptyMessage');
         var $previewList = $previewDiv.children('ul');
+        var $loadedList = $('div.loadedImages ul');
         var $dropBox = $('#dropbox');
 
-        $filesInput.change(function (event) {
-            console.log("on change");
+        $filesInput.change(function () {
             clear();
             showThumbs($filesInput[0].files);
         });
@@ -36,22 +37,25 @@ requirejs(['jquery', 'app/resize', 'app/fileUtils'], function ($, resize, fileUt
         function clear() {
             selectedFiles = [];
             $previewList.empty();
+            $loadedList.empty();
             showMessage();
         }
 
         function showMessage() {
             if (selectedFiles.length === 0) {
-                $noLoadedFilesMessage.show();
+                $noFilesMessage.show();
+                $someFilesMessage.hide();
             } else {
-                $noLoadedFilesMessage.hide();
+                $noFilesMessage.hide();
+                $someFilesMessage.show();
             }
         }
-
+        showMessage();
+        
         function showThumb(file) {
             selectedFiles.push(file);
             showMessage();
-            $previewList.append('<li><p>' + file.myName + '</p><img src="' + URL.createObjectURL(file) + '"  onload="window.URL.revokeObjectURL( this.src);console.log(\'releaseURL2\');"/></li>');
-            //URL.revokeObjectURL( src);
+            $previewList.append('<li><p>' + file.myName + '</p><img src="' + URL.createObjectURL(file) + '"  onload="window.URL.revokeObjectURL( this.src);"/></li>');
         }
 
         function showThumbs(files) {
@@ -59,28 +63,21 @@ requirejs(['jquery', 'app/resize', 'app/fileUtils'], function ($, resize, fileUt
                 var photo = files[i];
 
                 if (photo.type.startsWith("image/")) {
-                    //  showThumb(photo);  
-                    //  console.log("=" + photo.name + "; " + photo.type);
                     resizePhoto(photo);
                 }
             }
         }
         function resizePhoto(file) {
-            console.log('resizing filename=' + file.name + '; initial size=' + file.size);
             resize(file, 1200, function (resizedFile) {
-                console.log('resized o.filename=' + file.name + '; r.filename=' + resizedFile.name + '; initial size=' + file.size + '; resized=' + resizedFile.size);
+                console.log('resized original filename=' + file.name + '; resided file name=' + resizedFile.name + '; initial size=' + file.size + '; resized size=' + resizedFile.size);
                 resizedFile.myName = file.name; // name is erased in the resized file
                 showThumb(resizedFile);
-
             });
         }
 
-        $('input[type=submit]').click(function (event) {
-            console.log('submit');
-            event.preventDefault();
+        $('button').click(function (event) {
             var firstName = $firstNameInput.val();
             var lastName = $lastNameInput.val();
-            console.log("names: "+firstName + " " + lastName);
             var inputData = {firstName: firstName, lastName: lastName};
 
             fileUtils.upload(uploadUrl, inputData, selectedFiles, function (data) {
@@ -90,33 +87,25 @@ requirejs(['jquery', 'app/resize', 'app/fileUtils'], function ($, resize, fileUt
         });
 
         function displayLinkToUploadedImage(url) {
-            $imageTable.append('<tr><td>' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds() + '</td><td>'
-                    + '</td><td>' + '</td><td>'
-                    + '</td><td><a href="' + url + '">view image</a></td></tr>');
+            $loadedList.append('<li><p>' + url + '</p><a href="' + url + '"><img src="' + url + '"/></a></li>');
         }
-
-
 
         $dropBox.on("dragenter", onDragEnter).on("dragover", onDragOver).on("drop", onDrop);
 
         function onDragEnter(e) {
-            //    console.log('onDragEnter');
             e.stopPropagation();
             e.preventDefault();
         }
 
         function onDragOver(e) {
-            //   console.log('onDragOver');
             e.stopPropagation();
             e.preventDefault();
         }
+
         function onDrop(e) {
-            console.log('onDrop');
             e.stopPropagation();
             e.preventDefault();
-
             showThumbs(e.originalEvent.dataTransfer.files);
-
         }
     });
 
