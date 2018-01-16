@@ -4,7 +4,6 @@ package image;
 
 import static image.ImageConstants.FILE_STORAGE_LOCATION;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -40,11 +39,6 @@ public static String IMAGE_SERVLET_PATH="image/";
             }
         } else {
             sendNotFound(response, "file name not specified");
-        }
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-
-            out.println(fileName);
         }
     }
 

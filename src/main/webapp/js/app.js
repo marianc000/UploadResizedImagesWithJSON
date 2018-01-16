@@ -13,7 +13,7 @@ requirejs.config({
 // Start the main app logic.
 requirejs(['jquery', 'app/resize', 'app/fileUtils'], function ($, resize, fileUtils) {
 
-    var uploadUrl = 'upload';
+    var uploadUrl = 'api/upload';
 // drag and drop
 
     $(function () {

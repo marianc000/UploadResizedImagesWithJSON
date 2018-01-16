@@ -18,6 +18,7 @@ public class MyApplication extends Application {
             {
                 add(MyResource.class);
                 add(IllustratedDataResource.class);
+                add(MultiPartResource.class);
             }
         };
     }

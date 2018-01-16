@@ -25,11 +25,11 @@ import service.MyObjectMapperFactory;
  *
  * @author caikovsk
  */
-@WebServlet(name = "ImageUpload", urlPatterns = {"/upload"})
+@WebServlet(name = "ImageUpload", urlPatterns = {"/uploadServlet"})
 @MultipartConfig(location = FILE_STORAGE_LOCATION)
 public class ImageUpload extends HttpServlet {
 
-    public String FILE_PART_NAME = "photo";
+    public static String FILE_PART_NAME = "photo";
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -87,7 +87,7 @@ public class ImageUpload extends HttpServlet {
         }
     }
 
-    String getImageUrl(String fileName) {
+  public static  String getImageUrl(String fileName) {
         return IMAGE_SERVLET_PATH + fileName;
     }
 
