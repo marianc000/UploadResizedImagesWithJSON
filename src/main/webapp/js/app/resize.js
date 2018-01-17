@@ -21,7 +21,7 @@ define(function () {
             canvas.width = width;
             canvas.height = height;
             canvas.getContext('2d').drawImage(image, 0, 0, width, height);
-            canvas.toBlob(callback, 'image/jpeg', 0.8);
+            canvas.toBlob(callback, 'image/jpeg', 1);
         };
         image.src = URL.createObjectURL(file);
     };

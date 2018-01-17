@@ -75,7 +75,7 @@ public class ImageUpload extends HttpServlet {
         System.out.println("dataPart=" + dataPart);
         ObjectMapper mapper = MyObjectMapperFactory.getObjectMapper(); // create once, reuse
         IlllustratedData data = mapper.readValue(dataPart, IlllustratedData.class);
-        data.setPhotos(urls);
+     //   data.setPhotos(urls);
         System.out.println("dataPart=" + data);
         //TODO: return url in location header
         //    String responseStr = "{\"photos\":" + urls.toString() + "}";

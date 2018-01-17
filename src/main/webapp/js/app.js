@@ -86,8 +86,8 @@ requirejs(['jquery', 'app/resize', 'app/fileUtils'], function ($, resize, fileUt
 
         });
 
-        function displayLinkToUploadedImage(url) {
-            $loadedList.append('<li><p>' + url + '</p><a href="' + url + '"><img src="' + url + '"/></a></li>');
+        function displayLinkToUploadedImage(photo) {
+            $loadedList.append('<li><p>' + photo.fullSizeUrl + '</p><a href="' + photo.fullSizeUrl + '"><img src="' + photo.thumbUrl + '"/></a></li>');
         }
 
         $dropBox.on("dragenter", onDragEnter).on("dragover", onDragOver).on("drop", onDrop);
