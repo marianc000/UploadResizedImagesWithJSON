@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(urlPatterns = {"/image/*"})
 public class ImageServlet extends HttpServlet {
-public static String IMAGE_SERVLET_PATH="image/";
+
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -32,7 +32,6 @@ public static String IMAGE_SERVLET_PATH="image/";
             if (Files.exists(filePath)) {
                 response.setContentType(getServletContext().getMimeType(fileName));
                 response.setContentLengthLong(Files.size(filePath));
-                //content-disposition inline?
                 Files.copy(filePath, response.getOutputStream());
             } else {
                 sendNotFound(response, "file " + filePath + " does not exist");

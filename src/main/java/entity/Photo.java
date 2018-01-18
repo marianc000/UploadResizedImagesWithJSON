@@ -1,7 +1,6 @@
 package entity;
 
-import static image.ImageServlet.IMAGE_SERVLET_PATH;
-import java.nio.file.Paths;
+import static image.ImageConstants.IMAGE_SERVLET_PATH;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -9,14 +8,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.PUBLIC_MEMBER)
 public class Photo {
- String fullSizeUrl, thumbUrl;
+
+    String fullSizeUrl, thumbUrl;
 
     public Photo() {
     }
 
     public Photo(String fullSizeUrl, String thumbUrl) {
-        this.fullSizeUrl = fullSizeUrl;
-        this.thumbUrl = thumbUrl;
+        this.fullSizeUrl = getImageUrl(fullSizeUrl);
+        this.thumbUrl = getImageUrl(thumbUrl);
     }
 
     public String getFullSizeUrl() {
@@ -39,5 +39,8 @@ public class Photo {
     public String toString() {
         return "Photo{" + "fullSizeUrl=" + fullSizeUrl + ", thumbUrl=" + thumbUrl + '}';
     }
- 
+
+    String getImageUrl(String fileName) {
+        return IMAGE_SERVLET_PATH + fileName;
+    }
 }

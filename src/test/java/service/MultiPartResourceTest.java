@@ -7,6 +7,7 @@ import java.lang.reflect.Type;
 import java.util.LinkedList;
 import java.util.List;
 import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
@@ -15,7 +16,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import static service.MultiPartResource.CONTENT_DISPOSITION_HEADER;
 
 /**
  *
@@ -23,8 +23,7 @@ import static service.MultiPartResource.CONTENT_DISPOSITION_HEADER;
  */
 public class MultiPartResourceTest {
 
-    public MultiPartResourceTest() {
-    }
+ 
     MultiPartResource i = new MultiPartResource();
 
     @Before
@@ -40,7 +39,7 @@ public class MultiPartResourceTest {
         MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
         List<String> l = new LinkedList<>();
         l.add("form-data; name=\"photo\"; filename=\"chAR.jpg\"");
-        headers.put(CONTENT_DISPOSITION_HEADER, l);
+        headers.put(HttpHeaders.CONTENT_DISPOSITION, l);
         InputPart part = new InputPart() {
             @Override
             public MultivaluedMap<String, String> getHeaders() {

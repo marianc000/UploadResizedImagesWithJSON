@@ -11,13 +11,11 @@ public class MyApplication extends Application {
     public MyApplication() {
         singletons = new HashSet<Object>() {
             {
-                add(new MySharedObjectMapperProvider());
+                add(new MyObjectMapperProvider());
             }
         };
         resources = new HashSet<Class<?>>() {
             {
-                add(MyResource.class);
-                add(IllustratedDataResource.class);
                 add(MultiPartResource.class);
             }
         };
@@ -31,16 +29,16 @@ public class MyApplication extends Application {
      * default lifecycle for providers is singleton.
      */
     @Override
-    // note, it is called twice during initialization, 
+  
     public Set<Class<?>> getClasses() {
-        System.out.println(">getClasses()");
+        System.out.println(">getClasses()");  // note, it is called twice during initialization, 
         return resources;
     }
 
     @Override
-    // note, it is called twice during initialization, 
+   
     public Set<Object> getSingletons() {
-        System.out.println(">getSingletons()");
+        System.out.println(">getSingletons()"); // note, it is called twice during initialization, 
         return singletons;
     }
 }

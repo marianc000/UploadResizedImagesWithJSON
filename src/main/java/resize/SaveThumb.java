@@ -13,7 +13,6 @@ public class SaveThumb {
     public static void main(String[] args) throws IOException {
 
         String filePath = "C:\\Users\\caikovsk\\Pictures\\GEN.JPG";
-
         long s = System.currentTimeMillis();
         new SaveThumb().createThumbnail(Paths.get(filePath), maxSize);
         System.out.println(System.currentTimeMillis() - s);
