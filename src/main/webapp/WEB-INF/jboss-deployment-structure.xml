@@ -6,7 +6,5 @@
         <dependencies>
             <module name="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" />
         </dependencies>
- 
-    </deployment>
-   
+    </deployment>  
 </jboss-deployment-structure>

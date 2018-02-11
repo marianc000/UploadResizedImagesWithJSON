@@ -24,13 +24,13 @@ public class ImageServlet extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+ 
         String fileName = request.getPathInfo();
         if (fileName != null) {
             fileName = URLDecoder.decode(fileName, StandardCharsets.UTF_8.name());
             Path filePath = Paths.get(FILE_STORAGE_LOCATION, fileName.substring(1));
             if (Files.exists(filePath)) {
-                response.setContentType(getServletContext().getMimeType(fileName));
+                response.setContentType(getServletContext().getMimeType(fileName)); // todo: it will be always the same
                 response.setContentLengthLong(Files.size(filePath));
                 Files.copy(filePath, response.getOutputStream());
             } else {

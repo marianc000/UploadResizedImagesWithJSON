@@ -23,7 +23,6 @@ import static org.junit.Assert.*;
  */
 public class MultiPartResourceTest {
 
- 
     MultiPartResource i = new MultiPartResource();
 
     @Before
@@ -83,4 +82,9 @@ public class MultiPartResourceTest {
         assertEquals("rZ2O7Q19om.jpg", i.getFileName(part));
     }
 
+    @Test
+    public void testGetExtensionFromMime() {
+        assertEquals(i.getExtensionFromMime("image/jpeg"), "jpeg");
+        assertEquals(i.getExtensionFromMime("image/png"), "png");
+    }
 }

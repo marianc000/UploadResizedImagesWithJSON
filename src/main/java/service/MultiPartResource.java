@@ -44,12 +44,18 @@ public class MultiPartResource {
         });
         List<Photo> urls = new LinkedList<>();
         List<InputPart> filesParts = map.get(FILE_PART_NAME);
-        if (filesParts!=null) {
+
+        if (filesParts != null) {
             for (InputPart part : filesParts) {
                 InputStream is = part.getBody(InputStream.class, null);
-                String fileName = getFileName(part);
+                String fileNameWithoutExtension = getFileName(part);
+                // System.out.println("fileName=" + fileName);
+                // make filename extension from mime type
+                System.out.println("mediatype=" + part.getMediaType());//image/jpeg  image/png
+                String fileName = getFileName(part) + getExtensionFromMime(part.getMediaType().toString());
                 java.nio.file.Path filePath = FILES_STORAGE_PATH.resolve(fileName);
                 Files.copy(is, filePath, StandardCopyOption.REPLACE_EXISTING);
+                System.out.println("saved to " + filePath);
                 String thumbFileName = new SaveThumb().createThumbnail(filePath, MAX_THUMB_SIZE);
                 urls.add(new Photo(fileName, thumbFileName));
             }
@@ -59,13 +65,16 @@ public class MultiPartResource {
         return dataPart;
     }
 
+    String getExtensionFromMime(String mime) {
+        return "." + mime.replace("image/", "");
+    }
+
     String getFileName(InputPart part) {
         MultivaluedMap<String, String> headers = part.getHeaders();
         String contentHeader = headers.get(HttpHeaders.CONTENT_DISPOSITION).get(0);
         for (String content : contentHeader.split(";")) {
             if (content.trim().startsWith("filename")) {
-                return content.substring(
-                        content.indexOf('=') + 1).trim().replace("\"", "");
+                return content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
             }
         }
         return null;

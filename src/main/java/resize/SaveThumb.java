@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import net.coobird.thumbnailator.Thumbnails;
+import utils.FileUtils;
 
 public class SaveThumb {
 
@@ -17,21 +18,21 @@ public class SaveThumb {
         new SaveThumb().createThumbnail(Paths.get(filePath), maxSize);
         System.out.println(System.currentTimeMillis() - s);
     }
+    String[] thumbFormats = {"jpg", "bmp", "gif", "png"};
 
     public String createThumbnail(Path p, int maxSize) throws IOException {
+        System.out.println("p: " + p);
         Path outputPath = getThumbPath(p, THUMB_ENDING);
+        System.out.println("saving thumb to: " + outputPath);
         Thumbnails.of(p.toString())
                 .size(maxSize, maxSize)
-                .outputFormat("jpg")
+                //   .outputFormat("jpg") //JPG, jpg, bmp, BMP, gif, GIF, WBMP, png, PNG, wbmp, jpeg, JPEG
                 .toFile(outputPath.toString());
         return outputPath.getFileName().toString();
     }
 
     Path getThumbPath(Path p, String suffix) {
-        String fileName = p.getFileName().toString();
-        int lastDot = fileName.lastIndexOf(".");
-        String ext = fileName.substring(lastDot);
-        String newFileName = fileName.substring(0, lastDot) + suffix + ext;
+        String newFileName = FileUtils.getFileNameWithoutExtension(p)+ suffix + FileUtils.getExtension(p);
         return p.getParent().resolve(newFileName);
     }
 

@@ -51,11 +51,12 @@ requirejs(['jquery', 'app/resize', 'app/fileUtils'], function ($, resize, fileUt
             }
         }
         showMessage();
-        
+
         function showThumb(file) {
             selectedFiles.push(file);
             showMessage();
-            $previewList.append('<li><p>' + file.myName + '</p><img src="' + URL.createObjectURL(file) + '"  onload="window.URL.revokeObjectURL( this.src);"/></li>');
+            $previewList.append('<li><p>' + file.myName + '</p><img src="' + URL.createObjectURL(file)
+                    + '"  onload="window.URL.revokeObjectURL(this.src);console.log(this.width+\'; \'+this.height+\'; \'+this.naturalWidth+\'; \'+this.naturalHeight);"/></li>');
         }
 
         function showThumbs(files) {
@@ -71,7 +72,13 @@ requirejs(['jquery', 'app/resize', 'app/fileUtils'], function ($, resize, fileUt
             resize(file, 1200, function (resizedFile) {
                 console.log('resized original filename=' + file.name + '; resided file name=' + resizedFile.name + '; initial size=' + file.size + '; resized size=' + resizedFile.size);
                 resizedFile.myName = file.name; // name is erased in the resized file
-                showThumb(resizedFile);
+                if (file.size > resizedFile.size) { // resized is bigger than the original
+                    console.log('resized is smaller');
+                    showThumb(resizedFile);
+                } else {
+                    console.warn('resized is bigger the the original');
+                    showThumb(file);
+                }
             });
         }
 
@@ -83,7 +90,6 @@ requirejs(['jquery', 'app/resize', 'app/fileUtils'], function ($, resize, fileUt
             fileUtils.upload(uploadUrl, inputData, selectedFiles, function (data) {
                 data.photos.forEach(displayLinkToUploadedImage);
             });
-
         });
 
         function displayLinkToUploadedImage(photo) {
@@ -108,14 +114,4 @@ requirejs(['jquery', 'app/resize', 'app/fileUtils'], function ($, resize, fileUt
             showThumbs(e.originalEvent.dataTransfer.files);
         }
     });
-
-
-
-
-
-}
-);
-
-
-
-
+});
