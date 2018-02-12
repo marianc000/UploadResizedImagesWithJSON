@@ -33,29 +33,25 @@ public class MultiPartResource {
     }
 
     @POST
-    //  @Path("part")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     public IlllustratedData post(MultipartFormDataInput input) throws IOException {
         Map<String, List<InputPart>> map = input.getFormDataMap();
         InputPart dataPartPart = map.get(FORM_DATA_PART_NAME).get(0);
-        dataPartPart.setMediaType(MediaType.APPLICATION_JSON_TYPE); // to parse to java
+        dataPartPart.setMediaType(MediaType.APPLICATION_JSON_TYPE); // to parse by a resource to a java class
         IlllustratedData dataPart = dataPartPart.getBody(new GenericType<IlllustratedData>() {
         });
+
         List<Photo> urls = new LinkedList<>();
+
         List<InputPart> filesParts = map.get(FILE_PART_NAME);
 
-        if (filesParts != null) {
+        if (filesParts != null) { // photos are included
             for (InputPart part : filesParts) {
                 InputStream is = part.getBody(InputStream.class, null);
-                String fileNameWithoutExtension = getFileName(part);
-                // System.out.println("fileName=" + fileName);
-                // make filename extension from mime type
-                System.out.println("mediatype=" + part.getMediaType());//image/jpeg  image/png
-                String fileName = getFileName(part) + getExtensionFromMime(part.getMediaType().toString());
+                String fileName = getUniqueFileNameWithInferedExtension(part);
                 java.nio.file.Path filePath = FILES_STORAGE_PATH.resolve(fileName);
                 Files.copy(is, filePath, StandardCopyOption.REPLACE_EXISTING);
-                System.out.println("saved to " + filePath);
                 String thumbFileName = new SaveThumb().createThumbnail(filePath, MAX_THUMB_SIZE);
                 urls.add(new Photo(fileName, thumbFileName));
             }
@@ -65,10 +61,18 @@ public class MultiPartResource {
         return dataPart;
     }
 
-    String getExtensionFromMime(String mime) {
-        return "." + mime.replace("image/", "");
+    String getUniqueFileNameWithInferedExtension(InputPart part) {
+        return getFileName(part)
+                + System.nanoTime() // to prevent overwriting
+                + "." + getExtensionFromMime(part.getMediaType());//image/jpeg  image/png
     }
 
+// java  ImageIO supports only  jpg, bmp, gif, png, which perferctly match mime types, the front-end should send only those types
+    String getExtensionFromMime(MediaType mime) {
+        return mime.toString().replace("image/", "");
+    }
+
+    // javascript send filenames without extension, the extension sould be inferred from mime type
     String getFileName(InputPart part) {
         MultivaluedMap<String, String> headers = part.getHeaders();
         String contentHeader = headers.get(HttpHeaders.CONTENT_DISPOSITION).get(0);

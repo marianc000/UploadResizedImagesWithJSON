@@ -8,8 +8,8 @@ define(function () {
             var formData = new FormData();
             selectedFiles.forEach(function (photo) {
                 console.log("appending: " + photo.myName); // TODO remove extension
-                // myName in resized, name in original
-                formData.append('photo', photo, getFileNameWithoutExtension(photo.myName || photo.name)); // formData.append(name, value, filename); you can append multiple values with the same name.
+                // formData.append(name, value, filename); you can append multiple values with the same name.
+                formData.append('photo', photo, getFileNameWithoutExtension(photo.myName || photo.name));   // myName in resized, name in original
             });
             formData.append('dataObject', JSON.stringify(inputData));
             $.ajax({

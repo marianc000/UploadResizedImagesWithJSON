@@ -14,14 +14,12 @@ requirejs.config({
 requirejs(['jquery', 'app/resize', 'app/fileUtils'], function ($, resize, fileUtils) {
 
     var uploadUrl = 'api/upload';
-// drag and drop
 
     $(function () {
         var selectedFiles = [];
         var $filesInput = $('input[type=file]');
         var $firstNameInput = $('input[name="firstName"]');
         var $lastNameInput = $('input[name="lastName"]');
-        //  var $imageTable = $('table.images tbody');
         var $previewDiv = $('div.preview');
         var $noFilesMessage = $previewDiv.find('p.emptyMessage');
         var $someFilesMessage = $previewDiv.find('p.nonEmptyMessage');
@@ -30,9 +28,30 @@ requirejs(['jquery', 'app/resize', 'app/fileUtils'], function ($, resize, fileUt
         var $dropBox = $('#dropbox');
 
         $filesInput.change(function () {
-            clear();
+           // clear();
             showThumbs($filesInput[0].files);
         });
+
+
+// dragging
+        $dropBox.on("dragenter", onDragEnter).on("dragover", onDragOver).on("drop", onDrop);
+
+        function onDragEnter(e) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
+
+        function onDragOver(e) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
+
+        function onDrop(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            showThumbs(e.originalEvent.dataTransfer.files);
+        }
+// common to display photos before submit
 
         function clear() {
             selectedFiles = [];
@@ -62,26 +81,13 @@ requirejs(['jquery', 'app/resize', 'app/fileUtils'], function ($, resize, fileUt
         function showThumbs(files) {
             for (var i = 0; i < files.length; i++) {
                 var photo = files[i];
-
                 if (photo.type.startsWith("image/")) {
-                    resizePhoto(photo);
+                    resize(photo, showThumb);
                 }
             }
         }
-        function resizePhoto(file) {
-            resize(file, 1200, function (resizedFile) {
-                console.log('resized original filename=' + file.name + '; resided file name=' + resizedFile.name + '; initial size=' + file.size + '; resized size=' + resizedFile.size);
-                resizedFile.myName = file.name; // name is erased in the resized file
-                if (file.size > resizedFile.size) { // resized is bigger than the original
-                    console.log('resized is smaller');
-                    showThumb(resizedFile);
-                } else {
-                    console.warn('resized is bigger the the original');
-                    showThumb(file);
-                }
-            });
-        }
 
+        // submit
         $('button').click(function (event) {
             var firstName = $firstNameInput.val();
             var lastName = $lastNameInput.val();
@@ -94,24 +100,6 @@ requirejs(['jquery', 'app/resize', 'app/fileUtils'], function ($, resize, fileUt
 
         function displayLinkToUploadedImage(photo) {
             $loadedList.append('<li><p>' + photo.fullSizeUrl + '</p><a href="' + photo.fullSizeUrl + '"><img src="' + photo.thumbUrl + '"/></a></li>');
-        }
-
-        $dropBox.on("dragenter", onDragEnter).on("dragover", onDragOver).on("drop", onDrop);
-
-        function onDragEnter(e) {
-            e.stopPropagation();
-            e.preventDefault();
-        }
-
-        function onDragOver(e) {
-            e.stopPropagation();
-            e.preventDefault();
-        }
-
-        function onDrop(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            showThumbs(e.originalEvent.dataTransfer.files);
         }
     });
 });

@@ -12,8 +12,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -25,19 +23,13 @@ public class MultiPartResourceTest {
 
     MultiPartResource i = new MultiPartResource();
 
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
     @Test
     public void testgetFileName() {
         MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
         List<String> l = new LinkedList<>();
-        l.add("form-data; name=\"photo\"; filename=\"chAR.jpg\"");
+        List<MediaType> currentMimeType = new LinkedList<>();
+        currentMimeType.add(new MediaType("image", "jpeg"));
+        l.add("form-data; name=\"photo\"; filename=\"chAR\""); // javascript sends files without extension
         headers.put(HttpHeaders.CONTENT_DISPOSITION, l);
         InputPart part = new InputPart() {
             @Override
@@ -62,7 +54,7 @@ public class MultiPartResourceTest {
 
             @Override
             public MediaType getMediaType() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                return currentMimeType.get(0);
             }
 
             @Override
@@ -75,16 +67,28 @@ public class MultiPartResourceTest {
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         };
-        assertEquals("chAR.jpg", i.getFileName(part));
-        l.set(0, "form-data; name=\"photo\"; filename=\"GEN.jpg\"");
-        assertEquals("GEN.jpg", i.getFileName(part));
-        l.set(0, "form-data; name=\"photo\"; filename=\"rZ2O7Q19om.jpg\"");
-        assertEquals("rZ2O7Q19om.jpg", i.getFileName(part));
+        assertEquals("chAR", i.getFileName(part));
+        assertEquals("jpeg", i.getExtensionFromMime(part.getMediaType()));
+        String newFileName = i.getUniqueFileNameWithInferedExtension(part);
+        assertTrue(newFileName.matches("^chAR\\d+\\.jpeg$"));
+        //
+        l.set(0, "form-data; name=\"photo\"; filename=\"G.EN\"");
+        assertEquals("G.EN", i.getFileName(part));
+        assertEquals("jpeg", i.getExtensionFromMime(part.getMediaType()));
+        newFileName = i.getUniqueFileNameWithInferedExtension(part);
+        assertTrue(newFileName.matches("^G.EN\\d+\\.jpeg$"));
+//
+        currentMimeType.set(0, new MediaType("image", "png"));
+        l.set(0, "form-data; name=\"photo\"; filename=\"rZ2O.7Q.19om\"");
+        assertEquals("rZ2O.7Q.19om", i.getFileName(part));
+        assertEquals("png", i.getExtensionFromMime(part.getMediaType()));
+        newFileName = i.getUniqueFileNameWithInferedExtension(part);
+        assertTrue(newFileName.matches("^rZ2O.7Q.19om\\d+\\.png$"));
     }
 
     @Test
     public void testGetExtensionFromMime() {
-        assertEquals(i.getExtensionFromMime("image/jpeg"), "jpeg");
-        assertEquals(i.getExtensionFromMime("image/png"), "png");
+        assertEquals(i.getExtensionFromMime(new MediaType("image", "jpeg")), "jpeg");
+        assertEquals(i.getExtensionFromMime(new MediaType("image", "png")), "png");
     }
 }

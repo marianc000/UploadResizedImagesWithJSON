@@ -18,7 +18,7 @@ public class SaveThumb {
         new SaveThumb().createThumbnail(Paths.get(filePath), maxSize);
         System.out.println(System.currentTimeMillis() - s);
     }
-    String[] thumbFormats = {"jpg", "bmp", "gif", "png"};
+   //  String[] thumbFormats = {"jpg", "bmp", "gif", "png"};
 
     public String createThumbnail(Path p, int maxSize) throws IOException {
         System.out.println("p: " + p);
@@ -26,7 +26,7 @@ public class SaveThumb {
         System.out.println("saving thumb to: " + outputPath);
         Thumbnails.of(p.toString())
                 .size(maxSize, maxSize)
-                //   .outputFormat("jpg") //JPG, jpg, bmp, BMP, gif, GIF, WBMP, png, PNG, wbmp, jpeg, JPEG
+                //  .outputFormat("jpg") //JPG, jpg, bmp, BMP, gif, GIF, WBMP, png, PNG, wbmp, jpeg, JPEG
                 .toFile(outputPath.toString());
         return outputPath.getFileName().toString();
     }
