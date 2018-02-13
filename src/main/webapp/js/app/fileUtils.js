@@ -7,9 +7,9 @@ define(function () {
         upload: function (uploadUrl, inputData, selectedFiles, callback) {
             var formData = new FormData();
             selectedFiles.forEach(function (photo) {
-                console.log("appending: " + photo.myName); // TODO remove extension
+                console.log("appending: " + photo.originalNameSize); // TODO remove extension
                 // formData.append(name, value, filename); you can append multiple values with the same name.
-                formData.append('photo', photo, getFileNameWithoutExtension(photo.myName || photo.name));   // myName in resized, name in original
+                formData.append('photo', photo, getFileNameWithoutExtension(photo.originalNameSize.name));    
             });
             formData.append('dataObject', JSON.stringify(inputData));
             $.ajax({

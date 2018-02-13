@@ -1,10 +1,10 @@
-define(function () {
-    var MAX_SIZE = 1200, MIME = 'image/jpeg', JPEG_QUALITY = 0.95;
+define(['app/NameAndSize'], function (NameAndSize) {
+    var MAX_SIZE = 1200, MIME = 'image/jpeg', JPEG_QUALITY = 0.93;
     var acceptableTypes = ["image/gif", "image/png", "image/jpeg", "image/bmp"];
 
     function size(size) {
         var i = Math.floor(Math.log(size) / Math.log(1024));
-        return (size / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
+        return (size / Math.pow(1024, i)).toFixed(2) * 1 + ['b', 'kb', 'Mb'][i];
     }
 
     function resizePhoto(file, callback) {
@@ -12,7 +12,6 @@ define(function () {
         image.onload = function ( ) {
             URL.revokeObjectURL(this.src);
             var canvas = document.createElement('canvas');
-            console.log("before=" + file.name + "; " + this.width + "; " + this.height + "; " + this.naturalWidth + "; " + this.naturalHeight);
             var width = this.width;
             var height = this.height;
 
@@ -37,29 +36,31 @@ define(function () {
     }
 
 
-    function onResized(file, resizedFile, callback) {
-        resizedFile.myName = file.name; // name is erased in the resized file
+    function chooseSmallerFile(file, resizedFile) {
         if (file.size > resizedFile.size) {
             console.log('the resized file is smaller');
-            callback(resizedFile);
+            return resizedFile;
         } else {
             // resized is bigger than the original
             // however, java ImageIO supports only  jpg, bmp, gif, png, which perferctly match mime types, the front-end should send only those types
             // if the file type is none of image/gif, image/png, image/jpeg, image/bmp use the bigger resized file
             console.warn('resized is bigger the the original');
             if (acceptableTypes.indexOf(file.type) >= 0) {
-                callback(file);
+                return file;
             } else {
                 console.warn('but the source file type is unacceptable: ' + file.type);
-                callback(resizedFile);
+                return  resizedFile;
             }
         }
     }
+
     return function (file, callback) {
         resizePhoto(file, function (originalWidth, originalHeight, resizedWidth, resizedHeight, resizedFile) {
-            console.log('filename=' + file.name + '; initial/resized size=' + size(file.size) + '/' + size(resizedFile.size)
-                    + '; initial picture dimensions=' + originalWidth + '/' + originalHeight + '; new dimensions=' + resizedWidth + '/' + resizedHeight);
-            onResized(file, resizedFile, callback);
+            console.log('filename=' + file.name + '; size=' + size(file.size) + '=>' + size(resizedFile.size)
+                    + '; dimensions=' + originalWidth + '/' + originalHeight + '=>' + resizedWidth + '/' + resizedHeight);
+            var smallerFile = chooseSmallerFile(file, resizedFile);
+            smallerFile.originalNameSize = new NameAndSize(file.name, file.size); // name is erased in the resized file. the name and size are used to select unique files
+            callback(smallerFile);
         });
     };
 });

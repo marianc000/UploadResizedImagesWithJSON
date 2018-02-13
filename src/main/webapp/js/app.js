@@ -28,8 +28,8 @@ requirejs(['jquery', 'app/resize', 'app/fileUtils'], function ($, resize, fileUt
         var $dropBox = $('#dropbox');
 
         $filesInput.change(function () {
-           // clear();
-            showThumbs($filesInput[0].files);
+            // clear();
+            resizeAndShowThumbs($filesInput[0].files);
         });
 
 
@@ -49,16 +49,16 @@ requirejs(['jquery', 'app/resize', 'app/fileUtils'], function ($, resize, fileUt
         function onDrop(e) {
             e.stopPropagation();
             e.preventDefault();
-            showThumbs(e.originalEvent.dataTransfer.files);
+            resizeAndShowThumbs(e.originalEvent.dataTransfer.files);
         }
 // common to display photos before submit
 
-        function clear() {
-            selectedFiles = [];
-            $previewList.empty();
-            $loadedList.empty();
-            showMessage();
-        }
+//        function clear() {
+//            selectedFiles = [];
+//            $previewList.empty();
+//            $loadedList.empty();
+//            showMessage();
+//        }
 
         function showMessage() {
             if (selectedFiles.length === 0) {
@@ -74,17 +74,30 @@ requirejs(['jquery', 'app/resize', 'app/fileUtils'], function ($, resize, fileUt
         function showThumb(file) {
             selectedFiles.push(file);
             showMessage();
-            $previewList.append('<li><p>' + file.myName + '</p><img src="' + URL.createObjectURL(file)
+            $previewList.append('<li><p>' + file.originalNameSize.name + '</p><img src="' + URL.createObjectURL(file)
                     + '"  onload="window.URL.revokeObjectURL(this.src);console.log(this.width+\'; \'+this.height+\'; \'+this.naturalWidth+\'; \'+this.naturalHeight);"/></li>');
         }
 
-        function showThumbs(files) {
-            for (var i = 0; i < files.length; i++) {
-                var photo = files[i];
-                if (photo.type.startsWith("image/")) {
-                    resize(photo, showThumb);
+        function resizeAndShowThumbs(files) {
+            for (var c = 0; c < files.length; c++) {
+                var file = files[c];
+                if (file.type.startsWith("image/") && isFileNotYetIncluded(file)) {
+                    console.log('resizing ' + file.name);
+                    resize(file, showThumb);
                 }
             }
+        }
+
+        function isFileNotYetIncluded(file) {
+            console.log('checking ' + file.name);
+            for (var c = 0; c < selectedFiles.length; c++) {
+                if (selectedFiles[c].originalNameSize.equals(file)) { // file has name and size read-only properties
+                    console.log('file ' + file.name + " is already included");
+                    return false;
+                }
+            }
+            console.log('adding ' + file.name);
+            return true;
         }
 
         // submit
