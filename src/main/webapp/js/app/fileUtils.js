@@ -7,7 +7,6 @@ define(function () {
         upload: function (uploadUrl, inputData, selectedFiles, callback) {
             var formData = new FormData();
             selectedFiles.forEach(function (photo) {
-                console.log("appending: " + photo.originalNameSize); // TODO remove extension
                 // formData.append(name, value, filename); you can append multiple values with the same name.
                 formData.append('photo', photo, getFileNameWithoutExtension(photo.originalNameSize.name));    
             });

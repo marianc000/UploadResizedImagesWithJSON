@@ -1,5 +1,5 @@
 define(['app/NameAndSize'], function (NameAndSize) {
-    var MAX_SIZE = 1200, MIME = 'image/jpeg', JPEG_QUALITY = 0.93;
+    var MAX_SIZE = 1200, MIME = 'image/jpeg', JPEG_QUALITY = 0.95;
     var acceptableTypes = ["image/gif", "image/png", "image/jpeg", "image/bmp"];
 
     function size(size) {
