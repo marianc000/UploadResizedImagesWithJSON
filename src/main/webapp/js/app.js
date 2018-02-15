@@ -17,7 +17,6 @@ requirejs(['jquery', 'app/resize', 'app/fileUtils'], function ($, resize, fileUt
 
     $(function () {
         var selectedFiles = [];
-        var $filesInput = $('input[type=file]');
         var $firstNameInput = $('input[name="firstName"]');
         var $lastNameInput = $('input[name="lastName"]');
         var $previewDiv = $('div.preview');
@@ -27,9 +26,8 @@ requirejs(['jquery', 'app/resize', 'app/fileUtils'], function ($, resize, fileUt
         var $loadedList = $('div.loadedImages ul');
         var $dropBox = $('#dropbox');
 
-        $filesInput.change(function () {
-            // clear();
-            resizeAndShowThumbs($filesInput[0].files);
+        $('input[type=file]').change(function () {
+            resizeAndShowThumbs(this.files);
         });
 
 
@@ -51,14 +49,6 @@ requirejs(['jquery', 'app/resize', 'app/fileUtils'], function ($, resize, fileUt
             e.preventDefault();
             resizeAndShowThumbs(e.originalEvent.dataTransfer.files);
         }
-// common to display photos before submit
-
-//        function clear() {
-//            selectedFiles = [];
-//            $previewList.empty();
-//            $loadedList.empty();
-//            showMessage();
-//        }
 
         function showMessage() {
             if (selectedFiles.length === 0) {
