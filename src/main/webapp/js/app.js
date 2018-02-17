@@ -11,7 +11,7 @@ requirejs.config({
 });
 
 // Start the main app logic.
-requirejs(['jquery', 'app/resize', 'app/fileUtils'], function ($, resize, fileUtils) {
+requirejs(['jquery', 'app/resize', 'app/fileUtils'], function ($, resize, upload) {
 
     var uploadUrl = 'api/upload';
 
@@ -25,9 +25,9 @@ requirejs(['jquery', 'app/resize', 'app/fileUtils'], function ($, resize, fileUt
         var $previewList = $previewDiv.children('ul');
         var $loadedList = $('div.loadedImages ul');
 
-$('input[type=file]').change(function () {
-    resizeAndShowThumbs(this.files);
-});
+        $('input[type=file]').change(function () {
+            resizeAndShowThumbs(this.files);
+        });
 
 
 // dragging
@@ -60,30 +60,30 @@ $('input[type=file]').change(function () {
         }
         showMessage();
 
-function showThumb(file) {
-    selectedFiles.push(file);
-    showMessage();
-    $previewList.append('<li><p>' + file.originalNameSize.name + '</p><img src="' + URL.createObjectURL(file)
-            + '"  onload="window.URL.revokeObjectURL(this.src);"/></li>');
-}
-
-function resizeAndShowThumbs(files) {
-    for (var c = 0; c < files.length; c++) {
-        var file = files[c];
-        if (file.type.startsWith("image/") && isFileNotYetIncluded(file)) {
-            resize(file, showThumb);
+        function showThumb(file) {
+            selectedFiles.push(file);
+            showMessage();
+            $previewList.append('<li><p>' + file.originalNameSize.name + '</p><img src="' + URL.createObjectURL(file)
+                    + '"  onload="window.URL.revokeObjectURL(this.src);"/></li>');
         }
-    }
-}
 
-function isFileNotYetIncluded(file) {
-    for (var c = 0; c < selectedFiles.length; c++) {
-        if (selectedFiles[c].originalNameSize.equals(file)) { // file has name and size read-only properties
-            return false;
+        function resizeAndShowThumbs(files) {
+            for (var c = 0; c < files.length; c++) {
+                var file = files[c];
+                if (file.type.startsWith("image/") && isFileNotYetIncluded(file)) {
+                    resize(file, showThumb);
+                }
+            }
         }
-    }
-    return true;
-}
+
+        function isFileNotYetIncluded(file) {
+            for (var c = 0; c < selectedFiles.length; c++) {
+                if (selectedFiles[c].originalNameSize.equals(file)) { // file has name and size read-only properties
+                    return false;
+                }
+            }
+            return true;
+        }
 
         // submit
         $('button').click(function (event) {
@@ -91,7 +91,7 @@ function isFileNotYetIncluded(file) {
             var lastName = $lastNameInput.val();
             var inputData = {firstName: firstName, lastName: lastName};
 
-            fileUtils.upload(uploadUrl, inputData, selectedFiles, function (data) {
+            upload(uploadUrl, inputData, selectedFiles, function (data) {
                 data.photos.forEach(displayLinkToUploadedImage);
             });
         });
