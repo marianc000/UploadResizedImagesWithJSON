@@ -11,7 +11,7 @@ requirejs.config({
 });
 
 // Start the main app logic.
-requirejs(['jquery', 'app/resize', 'app/fileUtils'], function ($, resize, upload) {
+requirejs(['jquery', 'app/resize', 'app/upload'], function ($, resize, upload) {
 
     var uploadUrl = 'api/upload';
 
