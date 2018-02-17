@@ -16,7 +16,7 @@ requirejs(['jquery', 'app/resize', 'app/fileUtils'], function ($, resize, fileUt
     var uploadUrl = 'api/upload';
 
     $(function () {
-        var selectedFiles = [];
+        var selectedFiles = []; // the array with the unique resized files that will be uploaded
         var $firstNameInput = $('input[name="firstName"]');
         var $lastNameInput = $('input[name="lastName"]');
         var $previewDiv = $('div.preview');
@@ -24,15 +24,14 @@ requirejs(['jquery', 'app/resize', 'app/fileUtils'], function ($, resize, fileUt
         var $someFilesMessage = $previewDiv.find('p.nonEmptyMessage');
         var $previewList = $previewDiv.children('ul');
         var $loadedList = $('div.loadedImages ul');
-        var $dropBox = $('#dropbox');
 
-        $('input[type=file]').change(function () {
-            resizeAndShowThumbs(this.files);
-        });
+$('input[type=file]').change(function () {
+    resizeAndShowThumbs(this.files);
+});
 
 
 // dragging
-        $dropBox.on("dragenter", onDragEnter).on("dragover", onDragOver).on("drop", onDrop);
+        $('#dropbox').on("dragenter", onDragEnter).on("dragover", onDragOver).on("drop", onDrop);
 
         function onDragEnter(e) {
             e.stopPropagation();
@@ -61,30 +60,30 @@ requirejs(['jquery', 'app/resize', 'app/fileUtils'], function ($, resize, fileUt
         }
         showMessage();
 
-        function showThumb(file) {
-            selectedFiles.push(file);
-            showMessage();
-            $previewList.append('<li><p>' + file.originalNameSize.name + '</p><img src="' + URL.createObjectURL(file)
-                    + '"  onload="window.URL.revokeObjectURL(this.src);"/></li>');
-        }
+function showThumb(file) {
+    selectedFiles.push(file);
+    showMessage();
+    $previewList.append('<li><p>' + file.originalNameSize.name + '</p><img src="' + URL.createObjectURL(file)
+            + '"  onload="window.URL.revokeObjectURL(this.src);"/></li>');
+}
 
-        function resizeAndShowThumbs(files) {
-            for (var c = 0; c < files.length; c++) {
-                var file = files[c];
-                if (file.type.startsWith("image/") && isFileNotYetIncluded(file)) {
-                    resize(file, showThumb);
-                }
-            }
+function resizeAndShowThumbs(files) {
+    for (var c = 0; c < files.length; c++) {
+        var file = files[c];
+        if (file.type.startsWith("image/") && isFileNotYetIncluded(file)) {
+            resize(file, showThumb);
         }
+    }
+}
 
-        function isFileNotYetIncluded(file) {
-            for (var c = 0; c < selectedFiles.length; c++) {
-                if (selectedFiles[c].originalNameSize.equals(file)) { // file has name and size read-only properties
-                    return false;
-                }
-            }
-            return true;
+function isFileNotYetIncluded(file) {
+    for (var c = 0; c < selectedFiles.length; c++) {
+        if (selectedFiles[c].originalNameSize.equals(file)) { // file has name and size read-only properties
+            return false;
         }
+    }
+    return true;
+}
 
         // submit
         $('button').click(function (event) {
