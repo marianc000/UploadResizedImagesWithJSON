@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/style.css" />
+        <script data-main="js/app.js" src="js/lib/require.js"></script>
+    </head>
+    <body>
+        <div class="mainContainer">
+            <div class="inputsContainer"> 
+                <div class="textInputs">
+                    <p>First name:  <input type="text" name="firstName" value="John"></p>
+                    <p>Last name: <input type="text" name="lastName" value="Smith"></p>    
+                </div>
+                <div class="fileInputs">
+                    <label id='dropbox' for='fileInput'><img src="imgs/File-Upload-icon.png"/>Select photos</label>
+                    <input id='fileInput' type="file" accept="image/*" multiple />
+                </div>
+                <button type="button">Submit</button>
+            </div>
+            <div class="preview">
+                <p class="nonEmptyMessage">Images in memory to be loaded</p>
+                <p class="emptyMessage">No files currently selected for upload</p>
+                <ul></ul>
+            </div>
+            <div class="loadedImages">
+                <p>Loaded images</p>
+                <ul></ul>
+            </div>
+        </div>
+    </body>
+
+</html>

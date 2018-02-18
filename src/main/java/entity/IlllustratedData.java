@@ -1,6 +1,7 @@
 package entity;
 
 import java.util.List;
+import java.util.Random;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -9,8 +10,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.PUBLIC_MEMBER)
 public class IlllustratedData {
 
+    Integer id;
     String firstName, lastName;
-    List<Photo> photos ;
+    List<Photo> photos;
 
     public IlllustratedData() {
     }
@@ -45,9 +47,19 @@ public class IlllustratedData {
         this.photos = photos;
     }
 
-    @Override
-    public String toString() {
-        return "IlllustratedData{" + "firstName=" + firstName + ", lastName=" + lastName + ", urls=" + photos + '}';
+    public Integer getId() {
+        if (id == null) {
+            id = new Random().nextInt();
+        }
+        return id;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "IlllustratedData{" + "id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", photos=" + photos + '}';
+    }
 }
