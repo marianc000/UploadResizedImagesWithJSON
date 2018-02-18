@@ -46,17 +46,18 @@ define(['underscore', 'backbone', 'app/PhotoProcessing'],
                     this.selectedFiles.push(file);
                     this.trigger('fileAdded', file);
                 },
-                saveMultipart: function () {
+                saveMultipart: function (options) {
+                    if (!options)
+                        options = {};
                     var formData = new FormData();
                     this.getSelectedFiles().forEach(function (photo) {
                         //  formData.append(name, value, filename); you can append multiple values with the same name.
                         formData.append('photo', photo, photo.originalNameSize.nameWithoutExtension);
                     });
                     formData.append('dataObject', JSON.stringify(this.toJSON( )));
-                    var options = {
-                        data: formData,
-                        contentType: false
-                    };
+                    options.data = formData;
+                    options.contentType = false;
+
                     this.save(null, options);
                 }
             });

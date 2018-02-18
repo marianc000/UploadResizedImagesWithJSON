@@ -23,7 +23,7 @@ requirejs(['jquery', 'app/Model/SomeModel'], function ($, Model) {
         var $previewList = $previewDiv.children('ul');
         var $loadedList = $('div.loadedImages ul');
         var $loadedOwner = $('div.loadedImages p');
-        
+
         $('input[type=file]').change(function () {
             resizeAndShowThumbs(this.files);
         });
@@ -75,7 +75,11 @@ requirejs(['jquery', 'app/Model/SomeModel'], function ($, Model) {
 
             model.setFirstName($firstNameInput.val());
             model.setLastName($lastNameInput.val());
-            model.saveMultipart();
+            model.saveMultipart({success: function () {
+                    console.log('>success is called before sync is triggered');
+                }, error: function () {
+                    console.log('>error');
+                }});
         });
         var model = new Model();
         model.on('sync', onFetch);
