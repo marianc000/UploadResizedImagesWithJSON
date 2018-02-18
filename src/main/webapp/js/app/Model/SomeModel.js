@@ -34,7 +34,7 @@ define(['underscore', 'backbone', 'app/PhotoProcessing'],
                 setUrls: function (val) {
                     this.set(properties.photoUrls, val);
                 },
-                selectedFiles: [],
+                selectedFiles: [], // the photos to be uploaded
                 getSelectedFiles: function () {
                     return   this.selectedFiles;
                 },
