@@ -11,13 +11,10 @@ requirejs.config({
 });
 
 // Start the main app logic.
-requirejs(['jquery', 'app/resize', 'app/upload', 'app/PhotoProcessing'], function ($, resize, upload, PhotoProcessing) {
-
-    var uploadUrl = 'api/upload';
-    var selectedFiles = []; // the array with the unique resized files that will be uploaded
-    var photoProcessing = new PhotoProcessing(selectedFiles);
+requirejs(['jquery', 'app/Model/SomeModel'], function ($, Model) {
 
     $(function () {
+        var selectedFiles = []; // the array with the unique resized files that will be uploaded
         var $firstNameInput = $('input[name="firstName"]');
         var $lastNameInput = $('input[name="lastName"]');
         var $previewDiv = $('div.preview');
@@ -26,7 +23,7 @@ requirejs(['jquery', 'app/resize', 'app/upload', 'app/PhotoProcessing'], functio
         var $previewList = $previewDiv.children('ul');
         var $loadedList = $('div.loadedImages ul');
         var $loadedOwner = $('div.loadedImages p');
-
+        
         $('input[type=file]').change(function () {
             resizeAndShowThumbs(this.files);
         });
@@ -70,22 +67,24 @@ requirejs(['jquery', 'app/resize', 'app/upload', 'app/PhotoProcessing'], functio
         }
 
         function resizeAndShowThumbs(files) {
-            photoProcessing.process(files, showThumb);
+            model.resizeAndShowThumbs(files);
         }
-
 
         // submit
         $('button').click(function (event) {
-            var firstName = $firstNameInput.val();
-            var lastName = $lastNameInput.val();
-            var inputData = {firstName: firstName, lastName: lastName};
 
-            upload(uploadUrl, inputData, selectedFiles, onFetch);
+            model.setFirstName($firstNameInput.val());
+            model.setLastName($lastNameInput.val());
+            model.saveMultipart();
         });
+        var model = new Model();
+        model.on('sync', onFetch);
+        model.on('fileAdded', showThumb);
 
-        function onFetch(data) {
-            $loadedOwner.text("Images loaded by "+data.firstName+" "+data.lastName);
-            data.photos.forEach(displayLinkToUploadedImage);
+        function onFetch(model) {
+            console.log('onFetch: ' + JSON.stringify(model));
+            $loadedOwner.text("Images loaded by " + model.getFirstName() + " " + model.getLastName());
+            model.getUrls().forEach(displayLinkToUploadedImage);
         }
 
         function displayLinkToUploadedImage(photo) {

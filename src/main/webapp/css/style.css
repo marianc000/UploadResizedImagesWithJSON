@@ -86,3 +86,7 @@ label {
 .loadedImages img {
     max-width: 10em;
 }
+.loadedImages>p {
+    font-weight: bold;
+    font-size: 1.5em;
+}

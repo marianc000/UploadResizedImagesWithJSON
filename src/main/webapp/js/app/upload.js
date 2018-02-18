@@ -1,13 +1,13 @@
 define(function () {
-    function getFileNameWithoutExtension(fileName) {
-        return fileName.replace(/\.[^/.]+$/, "");
-    }
+//    function getFileNameWithoutExtension(fileName) {
+//        return fileName.replace(/\.[^/.]+$/, "");
+//    }
 
     return  function (uploadUrl, inputData, selectedFiles, callback) {
         var formData = new FormData();
         selectedFiles.forEach(function (photo) {
             // formData.append(name, value, filename); you can append multiple values with the same name.
-            formData.append('photo', photo, getFileNameWithoutExtension(photo.originalNameSize.name));
+            formData.append('photo', photo, photo.originalNameSize.nameWithoutExtension);
         });
         formData.append('dataObject', JSON.stringify(inputData));
         $.ajax({
